@@ -1,1 +1,1 @@
-web: pm2 start bot.js
+web: npm start 
