@@ -59,17 +59,23 @@ bot.start((ctx) => {
     console.log('Referral Code:', referralCode);
 
     const caption = `
-    ⭐️Welcome to GEN Mining,
+*Welcome to the GEN Miner Bot\\!* 🎮
 
-    We are here to build the largest community to revolutionize gaming payments with cryptocurrency GEN Coin.
+GEN \\(Game EcoNet\\) is a super cool coin built for gamers, by gamers – a revolutionary cryptocurrency designed to streamline and secure financial interactions within the gaming ecosystem\\.
 
-    GEN Coin will be released at 2 million members in our community. Till then, here you can mine real money every second. Get free 2 GH/s Hashrate and 5 TRX welcome bonus. Top miners and promoters will be rewarded with free GEN coins. Don’t miss the opportunity to become part of this revolution.
+*Start now and experience the benefits\\:*
+\\- Receive *3 GEN* and *5 TRX* as a welcome bonus\\.
+\\- Enjoy free mining with a *2 GH\\/s* hashrate for USDT\\.
+\\- Earn TRX through our referral program\\.
 
-    Tap the start button to become part of the revolution.💰🚀`;
+*Tap "Open App" to get started\\!* 💰🚀
+    `.trim();
+    
     ctx.replyWithPhoto(
       { source: imageUrl },
       {
         caption: caption,
+        parse_mode: 'MarkdownV2',
         ...Markup.inlineKeyboard([
           [
             Markup.button.webApp('Open App', webAppUrlWithParams)        
@@ -92,6 +98,7 @@ bot.start((ctx) => {
     ctx.reply('An error occurred. Please try again.');
   }
 });
+
 
 bot.launch();
 console.log('Bot started!!');
