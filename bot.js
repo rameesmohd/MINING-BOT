@@ -15,7 +15,7 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
 const limiter = rateLimit({
   window: 1000, // 1 second
-  limit: 3,
+  limit: 2,
   onLimitExceeded: (ctx, next) => ctx.reply('Rate limit exceeded')
 });
 
