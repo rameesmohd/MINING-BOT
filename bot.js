@@ -4,7 +4,6 @@ const dotenv =require('dotenv')
 const rateLimit =require('telegraf-ratelimit')
 const CryptoJS =require('crypto-js')
 const path =require('path')
-const imageUrl = path.join(__dirname, 'assets', 'GEN.jpg');
 
 dotenv.config();
 
@@ -14,7 +13,7 @@ const WEBAPP_URL = process.env.WEBAPP_URL;
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
 const limiter = rateLimit({
-  window: 1000, // 1 second
+  window: 3000, 
   limit: 2,
   onLimitExceeded: (ctx, next) => ctx.reply('Rate limit exceeded')
 });
@@ -72,7 +71,7 @@ bot.start((ctx) => {
     `.trim();
     
     ctx.replyWithPhoto(
-      { source: imageUrl },
+     'https://res.cloudinary.com/dee3eurcm/image/upload/v1721849357/dgendcepr79vub9yvi3o.jpg' ,
       {
         caption: caption,
         parse_mode: 'MarkdownV2',
