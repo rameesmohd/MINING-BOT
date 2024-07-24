@@ -4,7 +4,7 @@ const dotenv =require('dotenv')
 const rateLimit =require('telegraf-ratelimit')
 const CryptoJS =require('crypto-js')
 const path =require('path')
-const imageUrl = path.join(__dirname, 'assets', 'ASVSDFFF.png');
+const imageUrl = path.join(__dirname, 'assets', 'GEN.jpg');
 
 dotenv.config();
 
