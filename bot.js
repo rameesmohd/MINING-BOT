@@ -58,7 +58,7 @@ bot.start((ctx) => {
     console.log('Referral Code:', referralCode);
 
     const caption = `
-*Welcome to the GEN Miner Bot\\!* 🎮
+*Welcome to the GEN Block Miner\\!* 🎮
 
 *GEN \\(Game EcoNet\\)* is a super cool coin built for gamers, by gamers – a revolutionary cryptocurrency designed to streamline and secure financial interactions within the gaming ecosystem\\.
 
