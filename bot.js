@@ -64,7 +64,7 @@ bot.start((ctx) => {
 
 *Start now and experience the benefits\\:*
 \\- Receive *3 GEN* and *5 TRX* as a welcome bonus\\.
-\\- Enjoy free mining with a *2 GH\\/s* hashrate for USDT\\.
+\\- Enjoy free mining with a *1 GH\\/s* hashrate for USDT\\.
 \\- Earn TRX through our referral program\\.
 
 *Tap "Open App" to get started\\!* 🚀
