@@ -13,9 +13,9 @@ const WEBAPP_URL = process.env.WEBAPP_URL;
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
 const limiter = rateLimit({
-  window: 3000, 
-  limit: 2,
-  onLimitExceeded: (ctx, next) => ctx.reply('Rate limit exceeded')
+  windowMs: 20 * 60 * 1000, // 20 minutes in milliseconds
+  max: 4, // limit each IP to 4 requests per windowMs
+  onLimitExceeded: (ctx, next) => ctx.reply('Too many requests. Please try again later.')
 });
 
 bot.use(limiter);
@@ -26,7 +26,7 @@ function encryptData(data) {
 
 bot.use((ctx, next) => {
   if (ctx.message) {
-    console.log(`Received command: ${ctx.message.text}`);
+    // console.log(`Received command: ${ctx.message.text}`);
   }
   return next();
 });
