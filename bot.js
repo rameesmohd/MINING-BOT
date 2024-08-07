@@ -1,7 +1,7 @@
 const { Markup, Telegraf } =require('telegraf')
 const { message } =require('telegraf/filters')
 const dotenv =require('dotenv')
-const rateLimit =require('telegraf-ratelimit')
+// const rateLimit =require('telegraf-ratelimit')
 const CryptoJS =require('crypto-js')
 const path =require('path')
 
@@ -12,24 +12,41 @@ const bot = new Telegraf(TELEGRAM_API_KEY);
 const WEBAPP_URL = process.env.WEBAPP_URL;
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
-const limiter = rateLimit({
-  windowMs: 20 * 60 * 1000, // 20 minutes in milliseconds
-  max: 4, // limit each IP to 4 requests per windowMs
-  onLimitExceeded: (ctx, next) => ctx.reply('Too many requests. Please try again later.')
+// const limiter = rateLimit({
+//   windowMs: 20 * 60 * 1000, // 20 minutes in milliseconds
+//   max: 5, // limit each IP to 4 requests per windowMs
+//   onLimitExceeded: (ctx, next) => ctx.reply('Too many requests. Please try again later.')
+// });
+
+// bot.use(limiter);
+
+const { RateLimiterMemory } = require('rate-limiter-flexible');
+
+const rateLimiter = new RateLimiterMemory({
+  points: 3, // Number of points
+  duration: 20 * 60, // 20 minutes
 });
 
-bot.use(limiter);
+bot.use(async (ctx, next) => {
+  try {
+    await rateLimiter.consume(ctx.from.id);
+    await next(); // Note the `await` here to ensure `next` is properly awaited
+  } catch (rlRejected) {
+    ctx.reply('Too many requests. Please try again later.');
+  }
+});
+
 
 function encryptData(data) {
   return CryptoJS.AES.encrypt(JSON.stringify(data), ENCRYPTION_KEY).toString();
 }
 
-bot.use((ctx, next) => {
-  if (ctx.message) {
-    // console.log(`Received command: ${ctx.message.text}`);
-  }
-  return next();
-});
+// bot.use((ctx, next) => {
+//   if (ctx.message) {
+//     // console.log(`Received command: ${ctx.message.text}`);
+//   }
+//   return next();
+// });
 
 bot.start((ctx) => {
   try {
@@ -95,7 +112,6 @@ Start now and receive *GEN* and *TRX* as a welcome bonus\\.
     ctx.reply('An error occurred. Please try again.');
   }
 });
-
 
 bot.launch();
 console.log('Bot started!!');

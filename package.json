@@ -18,6 +18,7 @@
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.4",
     "pm2": "^5.4.2",
+    "rate-limiter-flexible": "^5.0.3",
     "telegraf": "^4.16.3",
     "telegraf-ratelimit": "^2.0.0"
   }
