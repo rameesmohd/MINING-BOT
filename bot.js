@@ -23,7 +23,7 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const rateLimiter = new RateLimiterMemory({
-  points: 3, // Number of points
+  points: 15, // Number of points
   duration: 20 * 60, // 20 minutes
 });
 
@@ -35,7 +35,6 @@ bot.use(async (ctx, next) => {
     ctx.reply('Too many requests. Please try again later.');
   }
 });
-
 
 function encryptData(data) {
   return CryptoJS.AES.encrypt(JSON.stringify(data), ENCRYPTION_KEY).toString();
