@@ -1,7 +1,6 @@
 const { Markup, Telegraf } =require('telegraf')
 const { message } =require('telegraf/filters')
 const dotenv =require('dotenv')
-// const rateLimit =require('telegraf-ratelimit')
 const CryptoJS =require('crypto-js')
 const path =require('path')
 
@@ -11,14 +10,6 @@ const TELEGRAM_API_KEY = process.env.TELEGRAM_API_KEY;
 const bot = new Telegraf(TELEGRAM_API_KEY);
 const WEBAPP_URL = process.env.WEBAPP_URL;
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
-
-// const limiter = rateLimit({
-//   windowMs: 20 * 60 * 1000, // 20 minutes in milliseconds
-//   max: 5, // limit each IP to 4 requests per windowMs
-//   onLimitExceeded: (ctx, next) => ctx.reply('Too many requests. Please try again later.')
-// });
-
-// bot.use(limiter);
 
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 
@@ -30,7 +21,7 @@ const rateLimiter = new RateLimiterMemory({
 bot.use(async (ctx, next) => {
   try {
     await rateLimiter.consume(ctx.from.id);
-    await next(); // Note the `await` here to ensure `next` is properly awaited
+    await next(); 
   } catch (rlRejected) {
     ctx.reply('Too many requests. Please try again later.');
   }
@@ -47,13 +38,18 @@ function encryptData(data) {
 //   return next();
 // });
 
+const GlobalStoreReferralCodes = {};
+
 bot.start((ctx) => {
   try {
     const args = ctx.message.text.split(' ');
     let referralCode = null;
-
+    
     if (args.length > 1) {
       referralCode = args[1];
+      GlobalStoreReferralCodes[ctx.from.id] = referralCode;
+    } else {
+      referralCode = GlobalStoreReferralCodes[ctx.from.id] || '';
     }
 
     const userId = ctx.from.id;
