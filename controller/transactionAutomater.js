@@ -186,9 +186,7 @@ const fetchDepUsdtTransactions = async()=> {
             }
             await delay(2000);
         }
-        
-        console.log(filteredTransactions);
-        
+                
         return filteredTransactions;
     } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -219,17 +217,18 @@ const fetchUsdtTransactions = async()=> {
         };
         
         const filteredTransactions = [];
-        
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
         for (const tx of transactions) {
             const amount = parseFloat(tx.quant) / 1e6;
             if (amount >= 18 && amount <= 100) {
                 const fromIsContract = await isContractAddress(tx.from_address);
+                await delay(2000);
                 const toIsContract = await isContractAddress(tx.to_address);
                 if (!fromIsContract && !toIsContract) {
                     filteredTransactions.push(tx);
-                    return filteredTransactions
                 }
             }
+            await delay(2000);
         }
         
         return filteredTransactions;
@@ -281,9 +280,25 @@ const notifyTransactions = async({type,wallet})=> {
                     console.log('No transactions in the specified range.');
                     return;
                 }
-                const tx = transactions[0]
-                const amount = parseFloat(tx.quant) / 1e6;
-                await sendWithdrawMessage({user:userName,amount :amount+3,wallet:'main',transaction:tx.transaction_id})
+                const targetTransaction = transactions.find(tx => {
+                    const amount = parseFloat(tx.quant) / 1e6;
+                    return amount >= 20 && amount <= 30;
+                });
+                
+                const selectedTransaction = targetTransaction || transactions[0];
+                const amount = parseFloat(selectedTransaction.quant) / 1e6;
+                
+                console.log( 'target withdraw transaction :',selectedTransaction );
+                if(selectedTransaction == null){
+                    return;
+                }
+
+                await sendWithdrawMessage({
+                    user: userName,
+                    amount: amount + 3,
+                    wallet: 'main',
+                    transaction: selectedTransaction.transaction_id
+                });
             }
             if(wallet == 'trx'){
                 const transactions = await fetchTrxTransactions();
@@ -298,13 +313,13 @@ const notifyTransactions = async({type,wallet})=> {
         }
         if (type == 'deposit') {
         const maxRetries = 4;
-        const retryInterval = 60 * 1000; 
+        const retryInterval = 30 * 1000; 
     
         let attempt = 0;
         let tx = null;
-    
+        let transactions;    
         while (attempt <= maxRetries) {
-            const transactions = await fetchDepUsdtTransactions();
+            transactions = await fetchDepUsdtTransactions();
     
             if (transactions.length === 0) {
                 console.log('No transactions in the specified range.');
@@ -327,7 +342,11 @@ const notifyTransactions = async({type,wallet})=> {
     
             attempt++;
         }
-    
+
+        if(transactions.length === 0){
+            return;
+        }
+        
         if (!tx) {
             tx = transactions[0];
         }
