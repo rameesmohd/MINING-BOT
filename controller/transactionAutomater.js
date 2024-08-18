@@ -85,7 +85,7 @@ const sendDepositMessage = async ({user,amount,transaction,hash}) => {
           formattedTxid = escapeMarkdownV2(formattedTxid)
       }
   
-      const caption =`*✅ New Power Upgrade:*\n\n💰Amount: ${nAmount} USDT\nUser: ${escapedFName}\nHash: ${escapedHash}\n🔗TxId:${transaction!=null ? `[${formattedTxid}](${explorerUrl})` : `${formattedTxid}`}`;
+      const caption =`*✅ New Power Upgrade:*\n\n💰Amount: ${nAmount} USDT\n👨‍💻User: ${escapedFName}\n⚡Hash: ${escapedHash}\n🔗TxId:${transaction!=null ? `[${formattedTxid}](${explorerUrl})` : `${formattedTxid}`}`;
   
       const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
       
