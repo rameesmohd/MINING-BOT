@@ -1,8 +1,10 @@
-const { Markup, Telegraf } =require('telegraf')
-const { message } =require('telegraf/filters')
-const dotenv =require('dotenv')
-const CryptoJS =require('crypto-js')
-const path =require('path')
+const { Markup, Telegraf } = require('telegraf');
+const { message } = require('telegraf/filters');
+const dotenv = require('dotenv');
+const CryptoJS = require('crypto-js');
+const path = require('path');
+const express = require('express');
+const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 dotenv.config();
 
@@ -11,7 +13,6 @@ const bot = new Telegraf(TELEGRAM_API_KEY);
 const WEBAPP_URL = process.env.WEBAPP_URL;
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
-const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const rateLimiter = new RateLimiterMemory({
   points: 15, // Number of points
@@ -123,5 +124,19 @@ Start now and receive *GEN* and *TRX* as a welcome bonus\\.
   }
 });
 
-bot.launch();
-console.log('Bot started!!');
+const app = express();
+app.use(express.json()); 
+
+require('./cron_jobs');
+const PORT = process.env.PORT || 3000
+
+
+app.listen(PORT, () => {
+  try {
+    bot.launch();
+    console.log('Bot launched successfully!');
+  } catch (err) {
+    console.log('Failed to launch bot:', err);
+  }
+  console.log(`Express server is running on port ${PORT}`);
+});
