@@ -80,7 +80,7 @@ bot.start((ctx) => {
     const encryptedData = encryptData(dataToEncrypt);
     const webAppUrlWithParams = `${WEBAPP_URL}?data=${encodeURIComponent(encryptedData)}`;
     
-    // console.log(GlobalStoreReferralCodes , ': GlobalStoreReferralCodes');
+    console.log(GlobalStoreReferralCodes , ': GlobalStoreReferralCodes');
     // console.log(webAppUrlWithParams);
     // console.log('Referral Code:', referralCode);
 
