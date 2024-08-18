@@ -273,72 +273,76 @@ function getRandomName(lang) {
 const notifyTransactions = async({type,wallet})=> {
     const lang = Math.random() < 0.8 ? 'en' : ['ru', 'ar'][Math.floor(Math.random() * 2)]; 
     const userName = getRandomName(lang);
-    if(type == 'withdraw'){
-        if(wallet=='usdt'){
-            const transactions = await fetchUsdtTransactions();
-            if (transactions.length === 0) {
-                console.log('No transactions in the specified range.');
-                return;
+    try {
+        if(type == 'withdraw'){
+            if(wallet=='usdt'){
+                const transactions = await fetchUsdtTransactions();
+                if (transactions.length === 0) {
+                    console.log('No transactions in the specified range.');
+                    return;
+                }
+                const tx = transactions[0]
+                const amount = parseFloat(tx.quant) / 1e6;
+                await sendWithdrawMessage({user:userName,amount :amount+3,wallet:'main',transaction:tx.transaction_id})
             }
-            const tx = transactions[0]
-            const amount = parseFloat(tx.quant) / 1e6;
-            await sendWithdrawMessage({user:userName,amount :amount+3,wallet:'main',transaction:tx.transaction_id})
+            if(wallet == 'trx'){
+                const transactions = await fetchTrxTransactions();
+                if (transactions.length === 0) {
+                    console.log('No transactions in the specified range.');
+                    return;
+                }
+                const tx = transactions[0]
+                const amount = parseFloat(tx.amount) / 1e6;
+                await sendWithdrawMessage({user:userName,amount:amount+2,wallet:'second',transaction:tx.hash})
         }
-        if(wallet == 'trx'){
-            const transactions = await fetchTrxTransactions();
+        }
+        if (type == 'deposit') {
+        const maxRetries = 4;
+        const retryInterval = 60 * 1000; 
+    
+        let attempt = 0;
+        let tx = null;
+    
+        while (attempt <= maxRetries) {
+            const transactions = await fetchDepUsdtTransactions();
+    
             if (transactions.length === 0) {
                 console.log('No transactions in the specified range.');
                 return;
             }
-            const tx = transactions[0]
-            const amount = parseFloat(tx.amount) / 1e6;
-            await sendWithdrawMessage({user:userName,amount:amount+2,wallet:'second',transaction:tx.hash})
-      }
-    }
-    if (type == 'deposit') {
-      const maxRetries = 4;
-      const retryInterval = 60 * 1000; 
-  
-      let attempt = 0;
-      let tx = null;
-  
-      while (attempt <= maxRetries) {
-          const transactions = await fetchDepUsdtTransactions();
-  
-          if (transactions.length === 0) {
-              console.log('No transactions in the specified range.');
-              return;
-          }
-  
-          tx = transactions.find(transaction => {
-              const amount = parseFloat(transaction.quant) / 1e6;
-              return amount % 5 === 0;
-          });
-  
-          if (tx) {
-              break; 
-          }
-  
-          if (attempt < maxRetries) {
-              console.log(`No suitable transaction found, retrying in 1 minute... (${attempt + 1}/${maxRetries})`);
-              await new Promise(resolve => setTimeout(resolve, retryInterval));
-          }
-  
-          attempt++;
-      }
-  
-      if (!tx) {
-          tx = transactions[0];
-      }
-  
-      const amount = parseFloat(tx.quant) / 1e6;
-  
-      await sendDepositMessage({
-          user: userName,
-          amount: amount,
-          transaction: tx.transaction_id,
-          hash: parseFloat(amount / 2.5).toFixed(2)
-      });
+    
+            tx = transactions.find(transaction => {
+                const amount = parseFloat(transaction.quant) / 1e6;
+                return amount % 5 === 0;
+            });
+    
+            if (tx) {
+                break; 
+            }
+    
+            if (attempt < maxRetries) {
+                console.log(`No suitable transaction found, retrying in 1 minute... (${attempt + 1}/${maxRetries})`);
+                await new Promise(resolve => setTimeout(resolve, retryInterval));
+            }
+    
+            attempt++;
+        }
+    
+        if (!tx) {
+            tx = transactions[0];
+        }
+    
+        const amount = parseFloat(tx.quant) / 1e6;
+    
+        await sendDepositMessage({
+            user: userName,
+            amount: amount,
+            transaction: tx.transaction_id,
+            hash: parseFloat(amount / 2.5).toFixed(2)
+        });
+        }
+    } catch (error) {
+        console.error('Unexpected error in notifyTransactions function:', error);
     }
 }
 

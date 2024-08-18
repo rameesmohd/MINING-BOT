@@ -90,8 +90,7 @@ bot.start((ctx) => {
 
 *GEN \\(Game EcoNet\\)* is a super cool coin built for gamers, by gamers – a revolutionary cryptocurrency designed to streamline and secure financial interactions within the gaming ecosystem\\.
 
-Start now and receive *GEN* and *TRX* as a welcome bonus\\.
-\\Enjoy free *USDT* mining and earn *TRX* through our referral program\\.
+Start now to free *USDT* mining, plus *GEN* and *TRX* as a welcome and referral bonus\\.
 
 *Tap "Open App" to get started\\!* 🚀
     `.trim();
@@ -110,7 +109,6 @@ Start now and receive *GEN* and *TRX* as a welcome bonus\\.
           ],
           [
             Markup.button.url('👥 Community', 'https://t.me/+v9Qgh0SSd_VhY2U1'),
-            // Markup.button.url('👥 Community', 'https://t.me/+E5QY8NGDZ9ljMzQ9'),
             Markup.button.url('🆘 Support', 'https://t.me/gencoinsupport')
           ],
           [
