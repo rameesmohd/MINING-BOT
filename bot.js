@@ -38,7 +38,21 @@ function encryptData(data) {
 //   return next();
 // });
 
-const GlobalStoreReferralCodes = {};
+const MAX_SIZE = 2000;
+const GlobalStoreReferralCodes = new Map();
+
+function addReferralCode(userId, referralCode) {
+  if (GlobalStoreReferralCodes.size >= MAX_SIZE) {
+    const oldestKey = GlobalStoreReferralCodes.keys().next().value;
+    GlobalStoreReferralCodes.delete(oldestKey);
+  }
+  
+  GlobalStoreReferralCodes.set(userId, referralCode);
+}
+
+function getReferralCode(userId) {
+  return GlobalStoreReferralCodes.get(userId) || null;
+}
 
 bot.start((ctx) => {
   try {
@@ -47,9 +61,9 @@ bot.start((ctx) => {
     
     if (args.length > 1) {
       referralCode = args[1];
-      GlobalStoreReferralCodes[ctx.from.id] = referralCode;
+      addReferralCode(ctx.from.id,referralCode)
     } else {
-      referralCode = GlobalStoreReferralCodes[ctx.from.id] || '';
+      referralCode = getReferralCode(ctx.from.id) || null
     }
 
     const userId = ctx.from.id;
@@ -62,12 +76,13 @@ bot.start((ctx) => {
       first_name,
       inviter_code: referralCode ? referralCode : '',
     };
-
+    
     const encryptedData = encryptData(dataToEncrypt);
     const webAppUrlWithParams = `${WEBAPP_URL}?data=${encodeURIComponent(encryptedData)}`;
     
-    console.log(webAppUrlWithParams);
-    console.log('Referral Code:', referralCode);
+    // console.log(GlobalStoreReferralCodes , ': GlobalStoreReferralCodes');
+    // console.log(webAppUrlWithParams);
+    // console.log('Referral Code:', referralCode);
 
     const caption = `
 *Welcome to GEN Block Miner\\!* 🎮
@@ -93,11 +108,11 @@ Start now and receive *GEN* and *TRX* as a welcome bonus\\.
             Markup.button.url('ℹ What is GEN?','https://telegra.ph/GEN-COIN-07-18')
           ],
           [
-            Markup.button.url('📢 Announcements', 'https://t.me/+v9Qgh0SSd_VhY2U1'),
-            Markup.button.url('👥 Community', 'https://t.me/+E5QY8NGDZ9ljMzQ9'),
+            Markup.button.url('👥 Community', 'https://t.me/+v9Qgh0SSd_VhY2U1'),
+            // Markup.button.url('👥 Community', 'https://t.me/+E5QY8NGDZ9ljMzQ9'),
+            Markup.button.url('🆘 Support', 'https://t.me/gencoinsupport')
           ],
           [
-            Markup.button.url('🆘 Support', 'https://t.me/gencoinsupport')
           ]
         ])
       }
