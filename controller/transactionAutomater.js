@@ -269,6 +269,55 @@ function getRandomName(lang) {
     return languageNames[Math.floor(Math.random() * languageNames.length)];
 }
 
+function getRandomNumberBetween2And12() {
+    const randomNum = Math.random() * (12 - 2) + 2;
+    return randomNum.toFixed(2);
+}
+
+const sendClaimMessage = async () => {
+    const amount = getRandomNumberBetween2And12();
+    const lang = Math.random() < 0.8 ? 'en' : ['ru', 'ar'][Math.floor(Math.random() * 2)]; 
+    const user = getRandomName(lang);
+    const fName =user.length > 3 ? `${user.substring(0, 3)}...` : user
+    const escapedFName = escapeMarkdownV2(fName);
+    const nAmount = parseFloat(amount).toFixed(2).toString().replace(/\./g, '\\.');
+  
+    const caption =`*New USDT Profit Redeem:*\n\n💰Amount: ${nAmount} USDT\n👨‍💻User: ${escapedFName}`;
+  
+    const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+              
+    const params = {
+      chat_id: channelId,
+      photo: 'https://res.cloudinary.com/dee3eurcm/image/upload/v1721848888/bagjvh53ouc5j0lwsn1g.png',
+      caption: caption, 
+      parse_mode: 'MarkdownV2',
+      reply_markup: JSON.stringify({
+        inline_keyboard: [
+          [
+            {
+              text: 'Open App',
+              url: 't.me/genblockminerbot',
+            }
+          ],
+          [
+            {
+              text: 'Open Channel',
+              url: 't.me/+v9Qgh0SSd_VhY2U1',
+            }
+          ]
+        ],
+      }),
+    };
+  
+    try {
+      const response = await axios.post(url, params);
+      console.log('Photo sent successfully:', response.data);
+    } catch (error) {
+      console.error('Error sending photo:', error.response ? error.response.data : error.message);
+    }
+    return true
+  };
+
 const notifyTransactions = async({type,wallet})=> {
     const lang = Math.random() < 0.8 ? 'en' : ['ru', 'ar'][Math.floor(Math.random() * 2)]; 
     const userName = getRandomName(lang);
@@ -366,5 +415,6 @@ const notifyTransactions = async({type,wallet})=> {
 }
 
 module.exports = {
-    notifyTransactions
+    notifyTransactions,
+    sendClaimMessage
 }
