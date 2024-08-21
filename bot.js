@@ -108,11 +108,12 @@ Start now to free *USDT* mining, plus *GEN* and *TRX* as a welcome and referral 
             Markup.button.url('ℹ What is GEN?','https://telegra.ph/GEN-COIN-07-18')
           ],
           [
-            Markup.button.url('👥 Community', 'https://t.me/+v9Qgh0SSd_VhY2U1'),
-            Markup.button.url('🆘 Support', 'https://t.me/gencoinsupport')
+            Markup.button.url('💰 Proof of Transactions','https://t.me/+1UQfBhnnThU2Njc1')
           ],
           [
-          ]
+            Markup.button.url('👥 Community', 'https://t.me/+jEPYQZBFN0plZDI1'),
+            Markup.button.url('🆘 Support', 'https://t.me/gencoinsupport')
+          ],
         ])
       }
     );
